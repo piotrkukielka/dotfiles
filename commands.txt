@@ -1,0 +1,33 @@
+### NERDTree
+<leader>f --- toggle NT
+<leader>v --- open on current file
+
+:help NERDTreeMappings --- list of available key maps
+stuff like bookmarks, jumping to root node etc.
+
+
+### vim-surround
+*s* --- eg. csw
+ys*** [you surround] --- eg ysiw[
+
+
+### targets.vim
+**n* --- en. cin) [change inside next parentheses]
+
+
+### vimtex \\assumes <localleader> == \\
+\ll \lv \lc \le
+[[ [] ][ ]]
+% //move between delimiters
+
+objects: 
+    c - command
+    d - delimiters
+    e - environment
+    $ - inline math
+    P - section (paragraph)
+
+misc:
+    ts* - toggle starred
+    ]] - close environment
+    tsD / tsd - () --> \left(\right)
