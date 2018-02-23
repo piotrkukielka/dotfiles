@@ -25,6 +25,7 @@ ln -svf ~/.repos/dotfiles/tmux.conf ~/.tmux.conf
 ln -svf ~/.repos/dotfiles/tmux.reset.conf ~/.tmux.reset.conf
 ln -svf ~/.repos/dotfiles/zshrc ~/.zshrc
 ln -svf ~/.repos/dotfiles/alacritty.yml ~/.config/alacritty/alacritty.yml
+ln -svf ~/.repos/dotfiles/compton.conf ~/.config/compton.conf
 
 #install compton to reduce tearing
 

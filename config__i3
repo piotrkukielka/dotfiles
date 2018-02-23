@@ -161,3 +161,6 @@ bar {
 #mine mine mine mine mine mine
 #disable borders - needed for i3-gaps
 for_window [class="^.*"] border pixel 0 
+
+#use compton to reduce screen tearing
+exec --no-startup-id compton --config ~/.config/compton.conf -b
