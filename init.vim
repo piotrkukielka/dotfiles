@@ -1,5 +1,5 @@
 "font: https://github.com/be5invis/Iosevka
-"use NerdFonts
+"use NerdFonts, so not this link but the patched version
 "may have to use 'term' version to avoid '=' overlapping characters
 "Part of this file is shamelessly stolen from Greg 'wincent' Hurrell
 "lots of ideas for plugins came zhranklin's init
