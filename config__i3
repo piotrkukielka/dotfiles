@@ -160,7 +160,15 @@ bar {
 
 #mine mine mine mine mine mine
 #disable borders - needed for i3-gaps
-for_window [class="^.*"] border pixel 0 
+#for_window [class="^.*"] border pixel 0
 
 #use compton to reduce screen tearing
 exec --no-startup-id compton --config ~/.config/compton.conf -b
+
+#use shutter as print screen tool
+for_window [class="shutter"] floating enable
+bindsym Print exec shutter
+
+#set wallpaper
+exec --no-startup-id feh --bg-scale ~/.wallpapers/path-to-the-flower-garden...-1728×1080.jpg
+#i3-msg reload

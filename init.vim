@@ -10,10 +10,12 @@
 "not started
 set background=dark
 
-"set spell spelllang=en_us
 set nocompatible
-set spell spelllang=pl
 set encoding=utf8
+
+" set spell check
+set spell spelllang=en_us
+autocmd FileType markdown, md, tex, latex, text setlocal spell
 
 set autoindent                        " maintain indent of current line
 set backspace=indent,start,eol        " allow unrestricted backspacing in insert mode
@@ -150,6 +152,7 @@ Plug 'ludovicchabant/vim-gutentags' "ctags
 Plug 'ryanoasis/vim-devicons' "cool glyphs MUST COME AFTER SUPPORTED PLUGINS
 Plug 'christoomey/vim-tmux-navigator' "same keybindings for vim and tmux panes
 Plug 'edkolev/tmuxline.vim' "tmux line theme match nvim
+Plug 'wellle/tmux-complete.vim' "complete from other tmux windows
 call plug#end()
 
 colorscheme gruvbox    "chooses theme
