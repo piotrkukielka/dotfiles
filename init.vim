@@ -153,6 +153,7 @@ Plug 'ryanoasis/vim-devicons' "cool glyphs MUST COME AFTER SUPPORTED PLUGINS
 Plug 'christoomey/vim-tmux-navigator' "same keybindings for vim and tmux panes
 Plug 'edkolev/tmuxline.vim' "tmux line theme match nvim
 Plug 'wellle/tmux-complete.vim' "complete from other tmux windows
+Plug 'tpope/vim-fugitive' "git plugin
 call plug#end()
 
 colorscheme gruvbox    "chooses theme
