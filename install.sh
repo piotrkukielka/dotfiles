@@ -19,13 +19,14 @@ rm  Iosevka*
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 #create symlinks
-ln -svf ~/.repos/dotfiles/init.vim ~/.config/nvim/init.vim 
+ln -svf ~/.repos/dotfiles/init.vim ~/.config/nvim/init.vim
 ln -svf ~/.repos/dotfiles/config__i3 ~/.config/i3/config
 ln -svf ~/.repos/dotfiles/tmux.conf ~/.tmux.conf
 ln -svf ~/.repos/dotfiles/tmux.reset.conf ~/.tmux.reset.conf
 ln -svf ~/.repos/dotfiles/zshrc ~/.zshrc
 ln -svf ~/.repos/dotfiles/alacritty.yml ~/.config/alacritty/alacritty.yml
 ln -svf ~/.repos/dotfiles/compton.conf ~/.config/compton.conf
+ln -svf ~/.repos/dotfiles/i3blocks.conf ~/.i3blocks.conf
 
 #install compton to reduce tearing
 
