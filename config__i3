@@ -227,3 +227,7 @@ set $term --no-startup-id alacritty
 
 #Unclutter makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
+
+#redshift 
+exec --no-startup-id redshift -t 5500:3000 
+bindsym $mod+Shift+u exec pkill -USR1 redshift
