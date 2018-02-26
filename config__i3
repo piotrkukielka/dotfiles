@@ -204,19 +204,20 @@ bar {
 }
 
 
-#mine mine mine mine mine mine
 #disable borders - needed for i3-gaps
 #for_window [class="^.*"] border pixel 0
 
 #use compton to reduce screen tearing
-exec --no-startup-id compton --config ~/.config/compton.conf -b
+#exec --no-startup-id compton --config ~/.config/compton.conf -b
+exec --no-startup-id compton --opacity-rule '100:window_type = "dock" && class_g = "i3bar"' --config ~/.config/compton.conf -b
 
 #use shutter as print screen tool
 for_window [class="shutter"] floating enable
 bindsym Print exec shutter
 
 #set wallpaper
-exec --no-startup-id feh --bg-scale ~/.wallpapers/path-to-the-flower-garden...-1728×1080.jpg
+#exec --no-startup-id feh --bg-scale ~/.wallpapers/path-to-the-flower-garden...-1728×1080.jpg
+exec --no-startup-id feh --recursive --randomize --bg-fill ~/.repos/wallpapers
 #i3-msg reload
 
 #Needed for i3-gaps

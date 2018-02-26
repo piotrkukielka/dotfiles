@@ -230,5 +230,7 @@ nnoremap <space>r :lrewind<CR>
 " let g:deoplete#sources#jedi#server_timeout = 100
 " /usr/lib/llvm-4.0/lib/libclang.so
 " find with: find / -name libclang.so
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-4.0/lib/libclang.so'
+" ubuntu:
+" let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-4.0/lib/libclang.so'
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
