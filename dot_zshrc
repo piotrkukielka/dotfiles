@@ -1,0 +1,129 @@
+# uncomment this on and the one at the bottom to profile
+# zmodload zsh/zprof
+# export ZVM_INIT_MODE=sourcing # this would be a workaround for broken ciw bidnging in vi-mode caused by fzf key clash, but is not as it breaks vi https://github.com/jeffreytse/zsh-vi-mode/issues/24
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Lazy-load antidote and generate the static load file only when needed
+zsh_plugins=/home/piotr/.config/zsh/zsh_plugins
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  (
+    source /usr/share/zsh-antidote/antidote.zsh
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  )
+fi
+source ${zsh_plugins}.zsh
+
+unsetopt beep
+
+############################################### powerline
+if zmodload zsh/terminfo && ((terminfo[colors] >= 256)); then
+  [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+else
+  [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k-portable.zsh
+fi
+############################################### zsh-vi-mode
+bindkey -v
+
+alias ssh="TERM=xterm-256color ssh"
+alias vim="nvim"
+alias vi="nvim"
+alias v="nvim"
+alias t="tmux"
+alias lg="lazygit"
+alias cat='bat --style=plain'
+alias ls='eza --grid --color=auto --icons=automatic'
+alias ll='eza --long --color=auto --icons=automatic --all'
+alias k=kubectl
+alias lazyvim="NVIM_APPNAME=lazyvim nvim"
+alias mc="mcli"
+
+# alias kctx='kubectx'
+# alias kns='kubens'
+# alias kt='kubectl top'
+# alias ktn='kubectl top nodes'
+# alias ktp='kubectl top pods'
+
+export EDITOR="/usr/local/bin/nvim"
+export KUBE_EDITOR=$EDITOR
+
+# fzf config
+export FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore --exclude .git'
+zvm_after_init_commands+=('source /usr/share/fzf/key-bindings.zsh')
+source /usr/share/fzf/completion.zsh
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+export FZF_CTRL_T_OPTS="
+  --preview 'bat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
+
+# zsh-autosuggest
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+# zvm_after_init_commands+=("bindkey '^n' autosuggest-accept")
+zvm_after_init_commands+=("bindkey '^e' forward-word")
+
+# nnn configuration
+export NNN_OPTS="A"
+n() {
+  # Block nesting of nnn in subshells
+  [ "${NNNLVL:-0}" -eq 0 ] || {
+    echo "nnn is already running"
+    return
+  }
+
+  # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+  # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
+  # see. To cd on quit only on ^G, remove the "export" and make sure not to
+  # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
+  NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+  # export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+  # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+  # stty start undef
+  # stty stop undef
+  # stty lwrap undef
+  # stty lnext undef
+
+  # The command builtin allows one to alias nnn to n, if desired, without
+  # making an infinitely recursive alias
+  command nnn "$@"
+
+  [ ! -f "$NNN_TMPFILE" ] || {
+    . "$NNN_TMPFILE"
+    rm -f "$NNN_TMPFILE" >/dev/null
+  }
+}
+
+export NNN_PLUG='p:preview-tabbed;z:autojump;f:fzopen;d:fzcd;g:gitroot;u:getplugs'
+
+# setting up node.js
+PATH="$HOME/.local/bin:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export npm_config_prefix="$HOME/.local"
+# end of node.js config
+
+# timing zsh startup
+timezsh() {
+  shell=${1-$SHELL}
+  for i in $(seq 1 10); do time $shell -i -c exit; done
+}
+
+# eval $(thefuck --alias)   # EXTREMELY SLOW! +300ms!
+eval "$(zoxide init zsh)"
+
+# eval "$(zellij setup --generate-auto-start zsh)"
+[ -n "$NNNLVL" ] && PS1="N$NNNLVL $PS1"
+
+# for gpg signing to work
+export GPG_TTY=$TTY
+# zprof
