@@ -272,8 +272,18 @@ require("lazy").setup({
 			return require("plugins.configs.treesitter")
 		end,
 	},
-	{ -- old-school git vim integration that gives :Gdiffsplit
+	{ -- old-school git vim integration that gives :Gdiffsplit and :GBrowse
 		"tpope/vim-fugitive",
+	},
+	{ -- extends GBrowse for github
+		"tpope/vim-rhubarb",
+		config = function()
+			-- TODO: https://github.com/shumphrey/fugitive-gitlab.vim/issues/49 API KEY
+			vim.g.fugitive_gitlab_domains = { ['ssh://git@gitlab.czk.comarch:2222'] = 'https://gitlab.czk.comarch' }
+		end,
+	},
+	{ -- extends GBrowse for gitlab
+		"shumphrey/fugitive-gitlab.vim",
 	},
 	{ -- mark color codes with their colors
 		"norcalli/nvim-colorizer.lua",
