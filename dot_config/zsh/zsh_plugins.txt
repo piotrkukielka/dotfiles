@@ -1,0 +1,17 @@
+romkatv/powerlevel10k
+
+jeffreytse/zsh-vi-mode
+
+zdharma-continuum/fast-syntax-highlighting
+
+belak/zsh-utils path:history
+belak/zsh-utils path:utility
+belak/zsh-utils path:editor
+belak/zsh-utils path:prompt
+
+zsh-users/zsh-completions path:src kind:fpath
+belak/zsh-utils path:completion
+zsh-users/zsh-autosuggestions kind:defer 
+zsh-users/zsh-history-substring-search kind:defer
+
+dbz/kube-aliases kind:defer
