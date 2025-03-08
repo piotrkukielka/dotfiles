@@ -277,14 +277,39 @@ require("lazy").setup({
 	},
 	{ -- extends GBrowse for github
 		"tpope/vim-rhubarb",
+	},
+	{ -- extends GBrowse for gitlab
+		"shumphrey/fugitive-gitlab.vim",
 		config = function()
 			-- TODO: https://github.com/shumphrey/fugitive-gitlab.vim/issues/49 API KEY
 			vim.g.fugitive_gitlab_domains = { ['ssh://git@gitlab.czk.comarch:2222'] = 'https://gitlab.czk.comarch' }
 		end,
 	},
-	{ -- extends GBrowse for gitlab
-		"shumphrey/fugitive-gitlab.vim",
-	},
+  { -- generate permalinks for github/gitlab
+    "linrongbin16/gitlinker.nvim",
+    cmd = "GitLink",
+		config = function(opts)
+			opts = opts or {}
+			opts.router = {
+				browse = {
+					["^gitlab.czk.comarch"] = "https://gitlab.czk.comarch/"
+						.. "{_A.ORG}/"
+						.. "{_A.REPO}/blobs/"
+						.. "{_A.CURRENT_BRANCH}/"
+						.. "{_A.FILE}"
+						.. "#L{_A.LSTART}"
+						.. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+				}
+			}
+			opts.debug = true
+			opts.file_log = true
+			require("gitlinker").setup(opts)
+		end,
+    keys = {
+      { "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Yank git link" },
+      { "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "Open git link" },
+    },
+  },
 	{ -- mark color codes with their colors
 		"norcalli/nvim-colorizer.lua",
 		config = function()
