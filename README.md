@@ -16,3 +16,5 @@ Only then will evaluate the template and ask for keepass password. Example line 
 ```
     somespecialvariable = {{ (keepassxc "dotfiles/test").UserName }}
 ```
+
+Unfortunalety if using templates `chezmoi re-add` does not work (for these files).
