@@ -333,12 +333,16 @@ require("lazy").setup({
 			lang = "golang",
 		},
 	},
-	{ -- typing practice
-    "nvzone/typr",
-    dependencies = "nvzone/volt",
-    opts = {},
-    cmd = { "Typr", "TyprStats" },
+	{ -- visualise undotree
+		"mbbill/undotree",
+    keys = {
+      { "<leader>u", "<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>", mode = { "n" }, desc = "Toggle Undotree" },
+    },
 	},
+	{ -- save to files using sudo without reopening neovim
+		"lambdalisue/vim-suda"
+	},
+
 
 	-- -- configuring lsp as shown in advent of nvim
 	-- TODO: do not show this weird lsp info on top of this file, configure for ansible
