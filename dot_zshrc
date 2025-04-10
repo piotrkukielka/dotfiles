@@ -10,6 +10,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Lazy-load antidote and generate the static load file only when needed
+export NVM_COMPLETION=true # this is a zsh-nvm variable
+# TODO: it looks bad, as I have to run nvm first to use vim. Maybe just change the default system nodejs version
+export NVM_LAZY_LOAD=true # this is a zsh-nvm variable
 zsh_plugins=/home/piotr/.config/zsh/zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
@@ -42,6 +45,7 @@ alias ll='eza --long --color=auto --icons=automatic --all'
 alias k=kubectl
 alias lazyvim="NVIM_APPNAME=lazyvim nvim"
 alias mc="mcli"
+alias nvim-kickstart="NVIM_APPNAME=nvim-kickstart nvim"
 
 # alias kctx='kubectx'
 # alias kns='kubens'
@@ -107,9 +111,10 @@ n() {
 export NNN_PLUG='p:preview-tabbed;z:autojump;f:fzopen;d:fzcd;g:gitroot;u:getplugs'
 
 # setting up node.js
+# . /usr/share/nvm/init-nvm.sh # seems to take a long time to load :/ maybe use https://github.com/lukechilds/zsh-nvm
 PATH="$HOME/.local/bin:$PATH"
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-export npm_config_prefix="$HOME/.local"
+# export npm_config_prefix="$HOME/.local" # not compatible with nvm
 # end of node.js config
 
 # timing zsh startup

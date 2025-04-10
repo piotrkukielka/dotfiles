@@ -3,6 +3,11 @@ require("lazy").setup({
 		"numToStr/Comment.nvim",
 		opts = {},
 	},
+	{ -- treesitter highlights todos by default now, but this still has better customization, colors and adding to quickfix/telescope and jump between
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {},
+	},
 	{ -- makes delimeters easier to tell apart
 		"HiPhish/rainbow-delimiters.nvim",
 	},
@@ -35,7 +40,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>lg", ":LazyGit<CR>", { noremap = true })
 		end,
 	},
-	{              -- adds s and ys capabilities
+	{ -- adds s and ys capabilities
 		"kylechui/nvim-surround",
 		version = "*", -- Use for stability; omit to use `main` branch for the latest features
 		event = "VeryLazy",
@@ -75,6 +80,7 @@ require("lazy").setup({
 	{ -- adds line at the bottom instead of the default vim one
 		-- TODO: there's a lot of configuration to be done
 		-- TODO: bufferline might be a nice addition
+		-- TODO: add yaml sections from yaml.nvim
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = {
@@ -122,11 +128,16 @@ require("lazy").setup({
 		"nvim-telescope/telescope-file-browser.nvim",
 		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
 	},
-	-- end of file managers
 	{ -- seamless neovim integration with tmux
 		"aserowy/tmux.nvim",
 		config = function()
-			return require("tmux").setup()
+			require("tmux").setup({
+				copy_sync = {
+					-- TODO: copy_sync breaks many register-related plugins https://github.com/aserowy/tmux.nvim/issues/88
+					-- try to find a way to work around it either in my config, in tmux.nvim or in yank.nvim (as at least this plugin is affected in my config)
+					enable = false,
+				},
+			})
 		end,
 	},
 	{ -- what's the correct shift width? ;)
@@ -171,7 +182,7 @@ require("lazy").setup({
 				python = { "black" },
 				yaml = { "prettier" },
 				ansible = { "prettier" },
-				['yaml.ansible'] = {'ansible_lint'}, -- TODO?
+				["yaml.ansible"] = { "ansible_lint" }, -- TODO?
 				bash = { "shfmt", "shellcheck" },
 				zsh = { "shfmt", "shellcheck" },
 				sh = { "shfmt", "shellcheck" },
@@ -282,34 +293,34 @@ require("lazy").setup({
 		"shumphrey/fugitive-gitlab.vim",
 		config = function()
 			-- TODO: https://github.com/shumphrey/fugitive-gitlab.vim/issues/49 API KEY
-			vim.g.fugitive_gitlab_domains = { ['ssh://git@gitlab.czk.comarch:2222'] = 'https://gitlab.czk.comarch' }
+			vim.g.fugitive_gitlab_domains = { ["ssh://git@gitlab.czk.comarch:2222"] = "https://gitlab.czk.comarch" }
 		end,
 	},
-  { -- generate permalinks for github/gitlab
-    "linrongbin16/gitlinker.nvim",
-    cmd = "GitLink",
+	{ -- generate permalinks for github/gitlab
+		"linrongbin16/gitlinker.nvim",
+		cmd = "GitLink",
 		config = function(opts)
 			opts = opts or {}
 			opts.router = {
 				browse = {
 					["^gitlab.czk.comarch"] = "https://gitlab.czk.comarch/"
 						.. "{_A.ORG}/"
-						.. "{_A.REPO}/blobs/"
+						.. "{_A.REPO}/-/blob/"
 						.. "{_A.CURRENT_BRANCH}/"
 						.. "{_A.FILE}"
 						.. "#L{_A.LSTART}"
 						.. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
-				}
+				},
 			}
 			opts.debug = true
 			opts.file_log = true
 			require("gitlinker").setup(opts)
 		end,
-    keys = {
-      { "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Yank git link" },
-      { "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "Open git link" },
-    },
-  },
+		keys = {
+			{ "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Yank git link" },
+			{ "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "Open git link" },
+		},
+	},
 	{ -- mark color codes with their colors
 		"norcalli/nvim-colorizer.lua",
 		config = function()
@@ -335,37 +346,59 @@ require("lazy").setup({
 	},
 	{ -- visualise undotree
 		"mbbill/undotree",
-    keys = {
-      { "<leader>u", "<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>", mode = { "n" }, desc = "Toggle Undotree" },
-    },
+		keys = {
+			{ "<leader>u", "<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>", mode = { "n" }, desc = "Toggle Undotree" },
+		},
 	},
 	{ -- save to files using sudo without reopening neovim
-		"lambdalisue/vim-suda"
+		"lambdalisue/vim-suda",
+	},
+	{ -- allows yanking path to yaml key
+		-- TODO: uncomment git repo after testing with local directory and pushing changes
+		-- TODO: add to README of this plugin that it can be broken by tmux.nvim
+		-- "cuducos/yaml.nvim",
+		dir = "~/private/yaml.nvim",
+		ft = { "yaml" }, -- optional
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			"nvim-telescope/telescope.nvim", -- optional
+		},
 	},
 
+	-- TODO: eveything below is total testing stage
+	{
+		"github/copilot.vim",
+		config = function()
+			vim.g.copilot_node_command = ".nvm/versions/node/v23.11.0/bin/node"
+		end,
+	},
 
 	-- -- configuring lsp as shown in advent of nvim
 	-- TODO: do not show this weird lsp info on top of this file, configure for ansible
-	-- {
-	-- 	'neovim/nvim-lspconfig',
-	-- 	dependencies = {
-	-- 		{
-	-- 			"folke/lazydev.nvim", -- this configures lsp to know vim. lua module and more
-	-- 			ft = "lua", -- only load on lua files
-	-- 			opts = {
-	-- 				library = {
-	-- 					-- See the configuration section for more details
-	-- 					-- Load luvit types when the `vim.uv` word is found
-	-- 					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
-	-- 	config = function()
-	-- 		require("lspconfig").lua_ls.setup {}
-	-- 		require("lspconfig").ansiblels.setup {}
-	-- 	end
-	-- },
+	-- https://github.com/nvim-lua/kickstart.nvim/issues/1305#issuecomment-2602544451
+	-- it should probably suppress this warning and I can disabled them for the whole file if needed
+	-- configuration added at the end of the file makes the lsp not underline this whole file :D
+	-- NOTE: it might not be a problem with the LSP but rather with syntax in this file, see setup here https://lazy.folke.io/installation
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			{
+				"folke/lazydev.nvim", -- this configures lsp to know vim. lua module and more
+				ft = "lua", -- only load on lua files
+				opts = {
+					library = {
+						-- See the configuration section for more details
+						-- Load luvit types when the `vim.uv` word is found
+						{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+					},
+				},
+			},
+		},
+		config = function()
+			require("lspconfig").lua_ls.setup({})
+			-- require("lspconfig").ansiblels.setup {} -- TODO: activate
+		end,
+	},
 	-- {
 	-- 	'mfussenegger/nvim-ansible',
 	-- }
@@ -378,11 +411,11 @@ require("lazy").setup({
 	--     { 'williamboman/mason.nvim', config = true },
 	--     'williamboman/mason-lspconfig.nvim',
 	--     { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
-	--     'folke/neodev.nvim',
+	--     'folke/neodev.nvim', -- lazydev is never
 	--   },
 	--   config = function() return require('plugins.configs.nvim-lspconfig') end
 	-- },
-	{ 'sindrets/diffview.nvim' },
+	{ "sindrets/diffview.nvim" },
 	-- { 'akinsho/git-conflict.nvim', version = "*", config = true },
 	-- {
 	--   -- Autocompletion
@@ -471,7 +504,7 @@ local servers = {
 }
 
 -- Setup neovim lua configuration
--- require('neodev').setup()
+-- require('neodev').setup() -- lazydev is newer
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -510,3 +543,29 @@ local servers = {
 --
 -- -- setup yamlls
 -- lspconfig.yamlls.setup {}
+vim.diagnostic.config({
+	severity_sort = true,
+	float = { border = "rounded", source = "if_many" },
+	underline = { severity = vim.diagnostic.severity.ERROR },
+	signs = vim.g.have_nerd_font and {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "󰅚 ",
+			[vim.diagnostic.severity.WARN] = "󰀪 ",
+			[vim.diagnostic.severity.INFO] = "󰋽 ",
+			[vim.diagnostic.severity.HINT] = "󰌶 ",
+		},
+	} or {},
+	virtual_text = {
+		source = "if_many",
+		spacing = 2,
+		format = function(diagnostic)
+			local diagnostic_message = {
+				[vim.diagnostic.severity.ERROR] = diagnostic.message,
+				[vim.diagnostic.severity.WARN] = diagnostic.message,
+				[vim.diagnostic.severity.INFO] = diagnostic.message,
+				[vim.diagnostic.severity.HINT] = diagnostic.message,
+			}
+			return diagnostic_message[diagnostic.severity]
+		end,
+	},
+})
