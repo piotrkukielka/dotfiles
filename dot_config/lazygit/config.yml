@@ -6,6 +6,8 @@ git:
     colorArg: always
     pager: delta --dark --paging=never
   disableForcePushing: true
+gui:
+  mouseEvents: false
   # gui:
 
 # Use the mocha catppuccin theme
