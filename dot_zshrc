@@ -67,12 +67,23 @@ export KUBE_EDITOR=$EDITOR
 
 # Atuin owns interactive history search (including Ctrl-R). It replaces the
 # previous fzf bindings; fd remains available for tools such as Telescope.
-eval "$(atuin init zsh)"
+# Keep Atuin AI disabled, including its default `?` key binding.
+eval "$(atuin init zsh --disable-ai)"
 
 # zsh-autosuggest
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 # zvm_after_init_commands+=("bindkey '^n' autosuggest-accept")
 zvm_after_init_commands+=("bindkey '^e' forward-word")
+
+# zsh-vi-mode applies its default normal-mode bindings after .zshrc has been
+# sourced. Restore Atuin after that one-time initialization so Ctrl-R does not
+# become `redo` in normal mode.
+_atuin_bind_ctrl_r() {
+  bindkey -M viins '^r' atuin-search-viins
+  bindkey -M vicmd '^r' atuin-search-vicmd
+  add-zsh-hook -d precmd _atuin_bind_ctrl_r
+}
+add-zsh-hook precmd _atuin_bind_ctrl_r
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
