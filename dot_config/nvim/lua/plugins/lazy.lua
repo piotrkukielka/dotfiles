@@ -10,6 +10,16 @@ require("lazy").setup({
 	},
 	{ -- makes delimeters easier to tell apart
 		"HiPhish/rainbow-delimiters.nvim",
+		init = function()
+			-- Noice's notification buffers have no Tree-sitter parser. Avoid
+			-- attaching rainbow delimiters to them (or any parser-less buffer).
+			vim.g.rainbow_delimiters = {
+				condition = function(bufnr)
+					local ok, parser = pcall(vim.treesitter.get_parser, bufnr)
+					return ok and parser ~= nil
+				end,
+			}
+		end,
 	},
 	{ -- adds markdown preview in browser
 		"iamcco/markdown-preview.nvim",
@@ -105,19 +115,6 @@ require("lazy").setup({
 		config = function()
 			require("oil").setup()
 			vim.keymap.set("n", "<leader>-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-		end,
-	},
-	{ -- seamless neovim integration with tmux
-		"aserowy/tmux.nvim",
-		config = function()
-			require("tmux").setup({
-				copy_sync = {
-					-- TODO: copy_sync breaks many register-related plugins https://github.com/aserowy/tmux.nvim/issues/88
-					-- try to find a way to work around it either in my config, in tmux.nvim or in yank.nvim (as at least this plugin is affected in my config)
-					-- currently setting to true as I use it ore than yaml.nvim
-					enable = true,
-				},
-			})
 		end,
 	},
 	{ -- what's the correct shift width? ;)
@@ -256,8 +253,10 @@ require("lazy").setup({
 	},
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		lazy = false,
 		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
+			"neovim-treesitter/treesitter-parser-registry",
 		},
 		build = ":TSUpdate",
 		config = function()
@@ -335,18 +334,6 @@ require("lazy").setup({
 	{ -- save to files using sudo without reopening neovim
 		"lambdalisue/vim-suda",
 	},
-	{ -- allows yanking path to yaml key
-		-- TODO: uncomment git repo after testing with local directory and pushing changes
-		-- TODO: add to README of this plugin that it can be broken by tmux.nvim
-		-- "cuducos/yaml.nvim",
-		dir = "~/private/yaml.nvim",
-		ft = { "yaml" }, -- optional
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-telescope/telescope.nvim", -- optional
-		},
-	},
-
 	-- TODO: eveything below is total testing stage
 	{
 		"github/copilot.vim",
@@ -833,4 +820,3 @@ require("lazy").setup({
 	}
 }
 )
-
