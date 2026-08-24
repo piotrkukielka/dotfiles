@@ -5,7 +5,9 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+# The instant prompt itself contains Powerlevel10k's powerline glyphs.  Do not
+# display it on the Linux virtual console.
+if [[ "$TERM" != "linux" && -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -17,11 +19,20 @@ antidote_home="${XDG_DATA_HOME:-$HOME/.local/share}/antidote"
 antidote_file="$antidote_home/antidote.zsh"
 zsh_plugins="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/zsh_plugins"
 zsh_plugins_static="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zsh_plugins.zsh"
+if [[ "$TERM" == "linux" ]]; then
+  # Do not initialize p10k at all on the virtual console.  Merely replacing
+  # PROMPT later leaves its instant-prompt output and initialization warning.
+  zsh_plugins_static="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zsh_plugins-console.zsh"
+fi
 if [[ -r "$antidote_file" ]]; then
   if [[ ! "$zsh_plugins_static" -nt "$zsh_plugins.txt" ]]; then
     mkdir -p "${zsh_plugins_static:h}"
     source "$antidote_file"
-    antidote bundle <"$zsh_plugins.txt" >"$zsh_plugins_static"
+    if [[ "$TERM" == "linux" ]]; then
+      antidote bundle < <(sed '/^romkatv\/powerlevel10k$/d' "$zsh_plugins.txt") >"$zsh_plugins_static"
+    else
+      antidote bundle <"$zsh_plugins.txt" >"$zsh_plugins_static"
+    fi
   fi
   source "$zsh_plugins_static"
 fi
