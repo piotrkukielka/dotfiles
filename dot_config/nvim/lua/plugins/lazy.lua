@@ -12,6 +12,8 @@ require("lazy").setup({
 		"HiPhish/rainbow-delimiters.nvim",
 	},
 	{ -- adds markdown preview in browser
+		-- needs sudo npm install tslib && sudo npm install -g yarn; yarn add tslib
+		-- might need a reinstall after that
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		build = "cd app && yarn install",
@@ -338,8 +340,8 @@ require("lazy").setup({
 	{ -- allows yanking path to yaml key
 		-- TODO: uncomment git repo after testing with local directory and pushing changes
 		-- TODO: add to README of this plugin that it can be broken by tmux.nvim
-		-- "cuducos/yaml.nvim",
-		dir = "~/private/yaml.nvim",
+		"cuducos/yaml.nvim",
+		-- dir = "~/private/yaml.nvim",
 		ft = { "yaml" }, -- optional
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
@@ -348,51 +350,51 @@ require("lazy").setup({
 	},
 
 	-- TODO: eveything below is total testing stage
-	{
-		"github/copilot.vim",
-		config = function()
-			-- TODO: is that correct? doesn't it override the defaults?
-			vim.g.copilot_node_command = ".nvm/versions/node/v23.11.0/bin/node"
-		end,
-	},
+	-- {
+	-- 	"github/copilot.vim",
+	-- 	config = function()
+	-- 		-- TODO: is that correct? doesn't it override the defaults?
+	-- 		vim.g.copilot_node_command = ".nvm/versions/node/v23.11.0/bin/node"
+	-- 	end,
+	-- },
 	-- {
 	-- 	"zbirenbaum/copilot.lua",
 	-- 	config = function()
 	-- 		require("copilot").setup({})
 	-- 	end,
 	-- },
-	{
-		-- TODO: looks like I have to setup completion and pick slash command from completion menu for slash commands to work
-		"olimorris/codecompanion.nvim",
-		opts = {},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-		},
-		config = function()
-			require("codecompanion").setup({
-				adapters = {
-					copilot = function()
-						return require("codecompanion.adapters").extend("copilot", {
-							name = "copilot-sonnet", -- Give this adapter a different name to differentiate it from the default one
-							schema = {
-								model = {
-									-- model names can be found by clicking <ga> in normal mode in the chat window and selecting a provider with number+enter, then model list will appear
-									default = "claude-3.7-sonnet",
-								},
-							},
-						})
-					end,
-				},
-			})
-			vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-			vim.keymap.set({ "n", "v" }, "<LocalLeader>ca", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
-			vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
-
-			-- Expand 'cc' into 'CodeCompanion' in the command line
-			vim.cmd([[cab cc CodeCompanion]])
-		end,
-	},
+	-- {
+	-- 	-- TODO: looks like I have to setup completion and pick slash command from completion menu for slash commands to work
+	-- 	"olimorris/codecompanion.nvim",
+	-- 	opts = {},
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	config = function()
+	-- 		require("codecompanion").setup({
+	-- 			adapters = {
+	-- 				copilot = function()
+	-- 					return require("codecompanion.adapters").extend("copilot", {
+	-- 						name = "copilot-sonnet", -- Give this adapter a different name to differentiate it from the default one
+	-- 						schema = {
+	-- 							model = {
+	-- 								-- model names can be found by clicking <ga> in normal mode in the chat window and selecting a provider with number+enter, then model list will appear
+	-- 								default = "claude-3.7-sonnet",
+	-- 							},
+	-- 						},
+	-- 					})
+	-- 				end,
+	-- 			},
+	-- 		})
+	-- 		vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+	-- 		vim.keymap.set({ "n", "v" }, "<LocalLeader>ca", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+	-- 		vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+	--
+	-- 		-- Expand 'cc' into 'CodeCompanion' in the command line
+	-- 		vim.cmd([[cab cc CodeCompanion]])
+	-- 	end,
+	-- },
 
 	-- {
 	-- 	'mfussenegger/nvim-ansible',
@@ -446,30 +448,30 @@ require("lazy").setup({
 			vim.g.loaded_netrwPlugin = 1
 		end,
 	},
-	{
-    "GeorgesAlkhouri/nvim-aider",
-    cmd = "Aider",
-    -- Example key mappings for common actions:
-    keys = {
-      { "<leader>a/", "<cmd>Aider toggle<cr>", desc = "Toggle Aider" },
-      { "<leader>as", "<cmd>Aider send<cr>", desc = "Send to Aider", mode = { "n", "v" } },
-      { "<leader>ac", "<cmd>Aider command<cr>", desc = "Aider Commands" },
-      { "<leader>ab", "<cmd>Aider buffer<cr>", desc = "Send Buffer" },
-      { "<leader>a+", "<cmd>Aider add<cr>", desc = "Add File" },
-      { "<leader>a-", "<cmd>Aider drop<cr>", desc = "Drop File" },
-      { "<leader>ar", "<cmd>Aider add readonly<cr>", desc = "Add Read-Only" },
-      { "<leader>aR", "<cmd>Aider reset<cr>", desc = "Reset Session" },
-      -- Example nvim-tree.lua integration if needed
-      { "<leader>a+", "<cmd>AiderTreeAddFile<cr>", desc = "Add File from Tree to Aider", ft = "NvimTree" },
-      { "<leader>a-", "<cmd>AiderTreeDropFile<cr>", desc = "Drop File from Tree from Aider", ft = "NvimTree" },
-    },
-    dependencies = {
-      "folke/snacks.nvim",
-      --- The below dependencies are optional
-      "catppuccin/nvim",
-    },
-    config = true,
-  },
+	-- {
+ --    "GeorgesAlkhouri/nvim-aider",
+ --    cmd = "Aider",
+ --    -- Example key mappings for common actions:
+ --    keys = {
+ --      { "<leader>a/", "<cmd>Aider toggle<cr>", desc = "Toggle Aider" },
+ --      { "<leader>as", "<cmd>Aider send<cr>", desc = "Send to Aider", mode = { "n", "v" } },
+ --      { "<leader>ac", "<cmd>Aider command<cr>", desc = "Aider Commands" },
+ --      { "<leader>ab", "<cmd>Aider buffer<cr>", desc = "Send Buffer" },
+ --      { "<leader>a+", "<cmd>Aider add<cr>", desc = "Add File" },
+ --      { "<leader>a-", "<cmd>Aider drop<cr>", desc = "Drop File" },
+ --      { "<leader>ar", "<cmd>Aider add readonly<cr>", desc = "Add Read-Only" },
+ --      { "<leader>aR", "<cmd>Aider reset<cr>", desc = "Reset Session" },
+ --      -- Example nvim-tree.lua integration if needed
+ --      { "<leader>a+", "<cmd>AiderTreeAddFile<cr>", desc = "Add File from Tree to Aider", ft = "NvimTree" },
+ --      { "<leader>a-", "<cmd>AiderTreeDropFile<cr>", desc = "Drop File from Tree from Aider", ft = "NvimTree" },
+ --    },
+ --    dependencies = {
+ --      "folke/snacks.nvim",
+ --      --- The below dependencies are optional
+ --      "catppuccin/nvim",
+ --    },
+ --    config = true,
+ --  },
 	-- -- configuring lsp as shown in advent of nvim
 	{ -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -597,6 +599,7 @@ require("lazy").setup({
             },
           },
         },
+        marksman = {},
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})

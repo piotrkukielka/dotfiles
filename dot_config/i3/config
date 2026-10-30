@@ -23,12 +23,6 @@ font pango:iosevka 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
-# The combination of xss-lock, nm-applet and pactl is a popular choice, so
-# they are included here as an example. Modify as you see fit.
-
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
-# screen before suspend. Use loginctl lock-session to lock your screen.
-
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
@@ -38,11 +32,12 @@ set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+# Headset connection steals @DEFAULT_SOURCE@. Script toggles every real mic.
+bindsym XF86AudioMicMute exec --no-startup-id /home/piotr/.config/i3/mic-mute.sh
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPause exec --no-startup-id playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
@@ -51,6 +46,13 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec alacritty
+
+# Handy: click, dictate, click again. Ctrl+Space types into the focused window.
+bindsym Control+space exec --no-startup-id /home/piotr/.local/bin/handy-dictate focus
+# Same toggle, transcript goes to the Herdr orchestrator. Win is $mod.
+bindsym $mod+o exec --no-startup-id /home/piotr/.local/bin/handy-dictate orchestrator
+exec --no-startup-id handy --start-hidden
+exec --no-startup-id /home/piotr/.local/bin/handy-record-notify
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -191,13 +193,20 @@ bindsym $mod+r mode "resize"
 
 ############################# OWN CHANGES ##########################################
 # TODO trying to fix suspend
-bindsym Control+Mod1+l exec "betterlockscreen --lock blur"
+# bindsym Control+Mod1+l exec "betterlockscreen --lock blur"
+bindsym Control+Mod1+l exec "i3lock -c 000000"
 # exec_always --no-startup-id picom --experimental-backend &
-exec_always --no-startup-id picom &
+# exec_always --no-startup-id picom &
 bindsym XF86MonBrightnessUp exec brightnessctl set +645
 bindsym XF86MonBrightnessDown exec brightnessctl set 645-
 # TODO trying to fix suspend
-exec_always --no-startup-id xss-lock -- betterlockscreen --lock dimblur
+# this is for locking on lid close
+# exec_always --no-startup-id xss-lock -- betterlockscreen --lock dimblur
+exec_always --no-startup-id xss-lock -- i3lock -c 000000
+
+# voxtype
+# Push-to-talk with toggle mode
+bindsym $mod+Shift+z exec --no-startup-id voxtype record toggle
 
 # set primary gruvbox colorscheme colors
 # set $bg #282828
@@ -212,7 +221,7 @@ exec_always --no-startup-id xss-lock -- betterlockscreen --lock dimblur
 
 # for_window [class="^.*"] border pixel 0
 smart_borders on
-default_border pixel 1
+default_border pixel 0
 # class                 border|backgr|text|indicator|child_border
 # client.focused          $green $green $darkgray $purple $darkgray
 # client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
@@ -222,9 +231,11 @@ default_border pixel 1
 focus_follows_mouse no
 mouse_warping none
 
-exec feh --bg-scale /home/piotr/private/wallpapers/wallhaven-j3g7yy_1920x1080.png
+# TODO
+exec feh --bg-scale /home/piotr/private/wallpapers/ufo58e8yd46a1.jpg
 exec_always --no-startup-id /home/piotr/.config/polybar/polybar.sh &
-exec --no-startup-id cbatticon
+# TODO
+exec --no-startup-id cbatticon 
 
 
 # move focused workspace between monitors
@@ -234,6 +245,7 @@ bindsym $mod+Ctrl+k move workspace to output up
 bindsym $mod+Ctrl+j move workspace to output down
 
 bindsym Print exec "flameshot gui"
+bindsym Shift+Print exec "flameshot launcher"
 
 gaps inner 1
 gaps outer 1

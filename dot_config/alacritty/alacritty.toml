@@ -38,9 +38,12 @@ multiplier = 3
 [selection]
 save_to_clipboard = false
 
+# [terminal.shell]
+# program = "/usr/bin/tmux"
+# args = ["new", "-A", "-s", "scratch"]
+
 [terminal.shell]
-program = "/usr/bin/tmux"
-args = ["new", "-A", "-s", "scratch"]
+program = "/usr/bin/zsh"
 
 [window]
 decorations = "none"
@@ -59,3 +62,6 @@ y = 0
 [window.position]
 x = 0
 y = 0
+
+[keyboard]
+bindings = [{ key = "Return", mods = "Shift", chars = "\u001b\r" }]
