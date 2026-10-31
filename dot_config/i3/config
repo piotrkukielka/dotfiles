@@ -33,7 +33,7 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 # Headset connection steals @DEFAULT_SOURCE@. Script toggles every real mic.
-bindsym XF86AudioMicMute exec --no-startup-id /home/piotr/.config/i3/mic-mute.sh
+bindsym XF86AudioMicMute exec --no-startup-id sh -c 'exec "$HOME/.config/i3/mic-mute.sh"'
 
 # Media player controls
 bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
@@ -48,11 +48,11 @@ floating_modifier $mod
 bindsym $mod+Return exec alacritty
 
 # Handy: click, dictate, click again. Ctrl+Space types into the focused window.
-bindsym Control+space exec --no-startup-id /home/piotr/.local/bin/handy-dictate focus
+bindsym Control+space exec --no-startup-id sh -c 'exec "$HOME/.local/bin/handy-dictate" focus'
 # Same toggle, transcript goes to the Herdr orchestrator. Win is $mod.
-bindsym $mod+o exec --no-startup-id /home/piotr/.local/bin/handy-dictate orchestrator
+bindsym $mod+o exec --no-startup-id sh -c 'exec "$HOME/.local/bin/handy-dictate" orchestrator'
 exec --no-startup-id handy --start-hidden
-exec --no-startup-id /home/piotr/.local/bin/handy-record-notify
+exec --no-startup-id sh -c 'exec "$HOME/.local/bin/handy-record-notify"'
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -232,8 +232,8 @@ focus_follows_mouse no
 mouse_warping none
 
 # TODO
-exec feh --bg-scale /home/piotr/private/wallpapers/ufo58e8yd46a1.jpg
-exec_always --no-startup-id /home/piotr/.config/polybar/polybar.sh &
+exec sh -c 'exec feh --bg-scale "$HOME/private/wallpapers/ufo58e8yd46a1.jpg"'
+exec_always --no-startup-id sh -c 'exec "$HOME/.config/polybar/polybar.sh"'
 # TODO
 exec --no-startup-id cbatticon 
 
